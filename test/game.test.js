@@ -15,7 +15,7 @@ describe('testing functionality of the Game object', () => {
 		expect(game.playerInit().p1.getName()).toBe(p1.getName()); expect(game.playerInit().p2.getToken()).toBe(p2.getToken());
 	})
 
-	it('should make a turn, and return new board', () => {
+	xit('should make a turn, and return new board', () => {
 		testBoard = [
 					'X', '', '',
 					'', '', '',

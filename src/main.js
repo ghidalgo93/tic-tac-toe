@@ -5,15 +5,18 @@ const GameBoard = (() => {
 	let _tokens = ['X', 'O'];
 
 	let _getAllArrays = () => {
-	 	let rows = [[_board[0], _board[1], _board[2]], [_board[3], _board[4], _board[5]], [_board[6], _board[7], _board[8]]];
-		let cols = [[_board[0], _board[3], _board[6]], [_board[1], _board[4], _board[7]], [_board[2], _board[5], _board[8]]];
-		let diags = [[_board[0], _board[4], _board[8]], [_board[2], _board[4], _board[6]]];
+	 	let rows = [[_board[0],_board[1],_board[2]],[_board[3],_board[4],_board[5]],[_board[6],_board[7],_board[8]]];
+		let cols = [[_board[0],_board[3],_board[6]],[_board[1],_board[4],_board[7]],[_board[2],_board[5],_board[8]]];
+		let diags = [[_board[0],_board[4],_board[8]],[_board[2],_board[4],_board[6]]];
 		return rows.concat(cols, diags);
 	}
-
 	const getBoard = () => _board;
 	const placeToken = (index, token) => {
-		_board[index] = token;
+		if (_board[index] === ''){
+			_board[index] = token;
+			return true;
+		}
+		else return false;
 	}
 	const checkBoard = () => {
 		let result, winner;
@@ -51,7 +54,6 @@ const GameBoard = (() => {
 const Player = (name, token) => {
 	const getName = () => name;
 	const getToken= () => token;
-
 	return {getName, getToken}
 }
 
@@ -126,13 +128,31 @@ const Game = () => {
 		// return: result
 // } 
 
-// game = Game()
-// game.init()
 
 
 
 
 //displayController (factory module)
+const displayController = (() => {
+	const p1Input = document.querySelector('#p1Input');
+	const btns = document.querySelectorAll('button');
+
+
+})();
+
+
+
+
+
+
+
+
+
+// game = Game()
+// game.init()
+
+
+
 
 
 //module exports
@@ -140,6 +160,4 @@ module.exports.GameBoard = GameBoard;
 module.exports.Player = Player;
 module.exports.Game = Game;
 // module.exports.DisplayController= DisplayController;
-
-
 

@@ -15,14 +15,26 @@ describe('testing the functionality of the GameBoard object module', () => {
 		expect(GameBoard.getBoard()).toEqual(testBoard);
 	})
 
-	it('should draw an X at position 4', () => {
+	it('should return true draw an X at position 4', () => {
+		testBoard = [
+			'', '', '',
+			'', 'X', '',
+			'', '', ''
+		];
+		expect(GameBoard.placeToken(4, 'X')).toBe(true);
+		expect(GameBoard.getBoard()).toEqual(testBoard);
+	})
+
+	it('should return false if a token is already at that position', () => {
 		testBoard = [
 			'', '', '',
 			'', 'X', '',
 			'', '', ''
 		];
 		GameBoard.placeToken(4, 'X');
+		expect(GameBoard.placeToken(4, 'X')).toBe(false);
 		expect(GameBoard.getBoard()).toEqual(testBoard);
+
 	})
 
 	//to run this test, first return the private function getAllArrays

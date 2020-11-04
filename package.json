@@ -1,0 +1,26 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "a tic-tac-toe game.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest",
+   	"watch": "jest --watchAll *.js "	
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghidalgo93/tic-tac-toe.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ghidalgo93/tic-tac-toe/issues"
+  },
+  "homepage": "https://github.com/ghidalgo93/tic-tac-toe#readme",
+  "devDependencies": {
+    "jest": "^26.6.2"
+  }
+}

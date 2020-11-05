@@ -1,5 +1,6 @@
 //main
 
+// GameBoard module
 const GameBoard = (() => {
 	let _board = ['', '', '','', '', '','', '', ''];  
 	let _tokens = ['X', 'O'];
@@ -51,113 +52,92 @@ const GameBoard = (() => {
 	return {getBoard, placeToken, checkBoard, clearBoard};
 })();
 
+// Player Object
 const Player = (name, token) => {
 	const getName = () => name;
-	const getToken= () => token;
+	const getToken = () => token;
 	return {getName, getToken}
 }
 
+// DisplayController module 
+const DisplayController = (() => {
+	// const p1Input = document.querySelector('#p1Input');
+	// const p1Input = document.querySelector('#p1Input');
+	const _btns = document.querySelectorAll('button');
+	let btnIndex;
+	const getBtnIndex = () => btnIndex;
+	const setBtnIndex = () => btnIndex = event.target.dataset.index; 
+	_btns.forEach((btn) => {
+		btn.addEventListener('click', setBtnIndex, false);
+	})
+	const _msg = document.querySelector('#msg');
+
+	const renderBoard = (board) => {
+		let i = 0;
+		_btns.forEach((btn) => {
+			btn.textContent = board[i];
+			i++;
+		})
+	}
+	const displayMsg = (message) => {
+		_msg.textContent = message;
+	}
+
+	return {renderBoard, displayMsg, getBtnIndex}
+})();
+
+// Game Object
 const Game = () => {
 	let _p1, _p2;
-	let _whosTurn = _p1;
+	let _whosTurn;
 	let _result, _winner;
-
-	const playerInit = () => {
-		let name1 = 'bob';
-		let name2 = 'jill'
-		return {
-			p1: Player(name1, 'X'),
-			p2: Player(name2, 'O')
-		}
-	}
-
-	const turn = () => {
-		console.log('Where would ')
-	}
-
-	const displayBoard = () => {
-
-	}
-
-	const gameInit = () => {
-		_p1 = playerInit().p1;
-		_p2 = playerInit().p2;
-
-		while (_result === undefined){
-
-		}
-
-	}
-
-
-	return {playerInit, turn}
-}
-	// whosTurn (private)
-	// gameboard init (private)
-	// players (private) 
-	// result = {outcome: null, winner: null}(private) 
-	
-	// playerInit() (private function)
-		// ask for players names and symbols
-			// p1 name?
-			// p1 symb?
-			// p2 name?
-			// p2 symb?
-		// return: p1(p1name, p1symb), p1(p2name, p2symb)
 	
 	// goesFirst(p1, p2) (private function)
 		// return: player object randomly 
-	
-	// turn(player) (private function)
-		// ask player for choice, log('where play?') -> get input
-		// place the play, board.place(playerInput, playerSymbol) 
-		// return: board 
-
-	// displayBoard(board.getBoard())
-		// someway of printing the board to log
-	
-	// init game (only public function)
-		// initialize players, playerInit
-		// choose who goes first,  whosTurn = goesFirst(p1, p2) 
-		// while we dont have a final result, while result = none;
-			// play a turn, board = turn(player) 
-			// displayBoard 
-			// whosTurn moves to next player
-			// check board, result = board.checkBoard();
+	const playerInit = () => {
+		//displayController.getNames();
+		let name1 = 'bob';
+		let name2 = 'jill'
+		_p1 = Player(name1, 'X');
+		_p2 = Player(name2, 'O');
+		_whosTurn = _p1;
+		return {_p1, _p2};
+	}
+	const turn = (player) => {
+		//from player we get name and token
+		DisplayController.displayMsg(`It is ${player.getName()}'s turn!`);
+		let clickIndex = DisplayController.getBtnIndex();
+		while (GameBoard.placeToken(clickIndex, player.getToken()) === false){
+			DisplayController.displayMsg('Pick an empty spot.');
+			//might present an issue: does place token get called again?
+		}
+		return GameBoard.getBoard();
+	}
+	const gameInit = () => {
+		playerInit();
+		//who goes first
+		while (_result === undefined){
+			turn(_whosTurn);
+			DisplayController.renderBoard(GameBoard.getBoard());
+			_whosTurn = (_p1) ? _p2 : _p1;
+			let outcome = GameBoard.checkBoard();
+			_result = outcome.result;
+			_winner = outcome.winner;
+		}
 		// display final result, console.log('winner is $(result)') 
-		// return: result
-// } 
+		DisplayController.renderBoard(GameBoard.getBoard());
+		return _result;
+	}
+	return {gameInit, playerInit, turn} //test return
+	// return {gameInit} //real return
+}
+
+const game = Game();
+game.gameInit();
 
 
 
 
-
-//displayController (factory module)
-const displayController = (() => {
-	const p1Input = document.querySelector('#p1Input');
-	const btns = document.querySelectorAll('button');
-
-
-})();
-
-
-
-
-
-
-
-
-
-// game = Game()
-// game.init()
-
-
-
-
-
-//module exports
 module.exports.GameBoard = GameBoard;
 module.exports.Player = Player;
 module.exports.Game = Game;
-// module.exports.DisplayController= DisplayController;
-

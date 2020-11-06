@@ -16,9 +16,9 @@ describe('testing the functionality of the GameBoard object module', () => {
 	})
 
 	it('should return true draw an X at position 4', () => {
-		testBoard = [
+		testboard = [
 			'', '', '',
-			'', 'X', '',
+			'', 'x', '',
 			'', '', ''
 		];
 		expect(GameBoard.placeToken(4, 'X')).toBe(true);

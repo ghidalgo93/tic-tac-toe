@@ -61,83 +61,87 @@ const Player = (name, token) => {
 
 // DisplayController module 
 const DisplayController = (() => {
-	// const p1Input = document.querySelector('#p1Input');
-	// const p1Input = document.querySelector('#p1Input');
-	const _btns = document.querySelectorAll('button');
-	let btnIndex;
-	const getBtnIndex = () => btnIndex;
-	const setBtnIndex = () => btnIndex = event.target.dataset.index; 
-	_btns.forEach((btn) => {
-		btn.addEventListener('click', setBtnIndex, false);
-	})
-	const _msg = document.querySelector('#msg');
+	const _mainMsg = document.querySelector('#mainMsg');
+	const _infoMsg = document.querySelector('#infoMsg');
 
+	const handleClick = () => Game.turn();
+	let _btns = document.querySelectorAll('button');
+	_btns.forEach((btn) => {
+		btn.addEventListener('click', handleClick, false);
+	})
+
+	const displayMainMsg = (message) => {_mainMsg.textContent = message;}
+	const displayInfoMsg = (message) => {_infoMsg.textContent = message;}
 	const renderBoard = (board) => {
 		let i = 0;
 		_btns.forEach((btn) => {
 			btn.textContent = board[i];
 			i++;
 		})
-	}
-	const displayMsg = (message) => {
-		_msg.textContent = message;
+		return _btns;
 	}
 
-	return {renderBoard, displayMsg, getBtnIndex}
+	return {renderBoard, displayMainMsg, displayInfoMsg}
 })();
 
 // Game Object
-const Game = () => {
+const Game = (() => {
 	let _p1, _p2;
 	let _whosTurn;
 	let _result, _winner;
-	
-	// goesFirst(p1, p2) (private function)
-		// return: player object randomly 
-	const playerInit = () => {
-		//displayController.getNames();
-		let name1 = 'bob';
-		let name2 = 'jill'
-		_p1 = Player(name1, 'X');
-		_p2 = Player(name2, 'O');
-		_whosTurn = _p1;
-		return {_p1, _p2};
+	const getWhosTurn = () => _whosTurn;
+	const switchTurn = () => {
+		(_whosTurn === _p1) ? _whosTurn = _p2 : _whosTurn = _p1;
 	}
-	const turn = (player) => {
-		//from player we get name and token
-		DisplayController.displayMsg(`It is ${player.getName()}'s turn!`);
-		let clickIndex = DisplayController.getBtnIndex();
-		while (GameBoard.placeToken(clickIndex, player.getToken()) === false){
-			DisplayController.displayMsg('Pick an empty spot.');
-			//might present an issue: does place token get called again?
-		}
-		return GameBoard.getBoard();
+
+	const endGame = () => {
+		console.log(_result);
+		if (_result === 'win') DisplayController.displayMainMsg(`${_winner} wins!`);
+		else displayMainMsg(`It's a tie nerds!`);
+		games.push({
+			result: _result,
+			winner: _winner
+		});
+	}
+
+	const turn = () => {
+		let outcome = GameBoard.checkBoard();
+		_result = outcome.result;
+		_winner = outcome.winner;
+		let index = event.target.dataset.index;
+		let placed = GameBoard.placeToken(index, getWhosTurn().getToken());
+		if (placed) {
+			if (_result !== undefined) endGame();
+			DisplayController.displayInfoMsg('');
+			switchTurn();
+			DisplayController.displayMainMsg(`${_whosTurn.getName()}'s turn.`);
+		} 		
+		else DisplayController.displayInfoMsg('Pick an empty space dork!');
+		DisplayController.renderBoard(GameBoard.getBoard());
+	}
+
+	const playerInit = () => {
+		_p1 = Player(prompt('Player X name: ', 'Player 1'), 'X');
+		_p2 = Player(prompt('Player O name: ', 'Player 2'), 'O');
+		let players = [_p1, _p2];
+		_whosTurn = players[~~(Math.random() * players.length)];
+		return {_p1, _p2, _whosTurn};
 	}
 	const gameInit = () => {
 		playerInit();
-		//who goes first
-		while (_result === undefined){
-			turn(_whosTurn);
-			DisplayController.renderBoard(GameBoard.getBoard());
-			_whosTurn = (_p1) ? _p2 : _p1;
-			let outcome = GameBoard.checkBoard();
-			_result = outcome.result;
-			_winner = outcome.winner;
-		}
-		// display final result, console.log('winner is $(result)') 
-		DisplayController.renderBoard(GameBoard.getBoard());
-		return _result;
+		DisplayController.displayMainMsg(`${_whosTurn.getName()} goes first!`)
 	}
-	return {gameInit, playerInit, turn} //test return
+
+	return {gameInit, playerInit, getWhosTurn, switchTurn, turn} //test return
 	// return {gameInit} //real return
-}
+})();
 
-const game = Game();
-game.gameInit();
+const games = []; //gives info on games played so far
 
-
+Game.gameInit();
 
 
 module.exports.GameBoard = GameBoard;
 module.exports.Player = Player;
 module.exports.Game = Game;
+module.exports.DisplayController = DisplayController;

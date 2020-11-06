@@ -11,17 +11,23 @@ describe('testing functionality of the Game object', () => {
 		game = Game();
 		p1 = Player('bob', 'X');
 		p2 = Player('jill', 'O');
+		// testBoard = [
+		// 	'', '', '',
+		// 	'', '', '',
+		// 	'', '', ''
+		// ];
 	})
 
-	it('should instantiate 2 players', () => {
-		expect(game.playerInit()._p1.getName()).toBe(p1.getName()); 
-		expect(game.playerInit()._p2.getToken()).toBe(p2.getToken());
+	it('Should initialize players, return 3 player objects (player1, player2, and random one of those)', () => {
+		let testPlayers = game.playerInit();
+		expect(Object.keys(testPlayers).length).toBe(3);
+		expect(testPlayers._p1.getName()).toBe('Player X');
+		expect(testPlayers._p2.getName()).toBe('Player O');
+		try {
+			expect(testPlayers._whosTurn.getName()).toBe('Player X');
+		}
+		catch {
+			expect(testPlayers._whosTurn.getName()).toBe('Player O');
+		}
 	})
-
-	xit('should take the current board and pass it to the display controller', () => {
-		GameBoard.placeToken(4, 'x');
-		let testBoard = GameBoard.getBoard();
-		
-	})
-
 })

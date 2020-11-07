@@ -108,16 +108,16 @@ const Game = (() => {
 		let outcome = GameBoard.checkBoard();
 		_result = outcome.result;
 		_winner = outcome.winner;
+		console.log(_result);
 		let index = event.target.dataset.index;
-		let placed = GameBoard.placeToken(index, getWhosTurn().getToken());
-		if (placed) {
-			if (_result !== undefined) endGame();
+		if (_result) endGame();
+		if (GameBoard.placeToken(index, getWhosTurn().getToken())) {
 			DisplayController.displayInfoMsg('');
 			switchTurn();
 			DisplayController.displayMainMsg(`${_whosTurn.getName()}'s turn.`);
+			DisplayController.renderBoard(GameBoard.getBoard());
 		} 		
 		else DisplayController.displayInfoMsg('Pick an empty space dork!');
-		DisplayController.renderBoard(GameBoard.getBoard());
 	}
 
 	const playerInit = () => {

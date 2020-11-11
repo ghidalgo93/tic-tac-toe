@@ -64,10 +64,14 @@ const DisplayController = (() => {
 	const _mainMsg = document.querySelector('#mainMsg');
 	const _infoMsg = document.querySelector('#infoMsg');
 
-	const handleClick = () => Game.turn();
-	let _btns = document.querySelectorAll('button');
+	const handleReset = () => Game.reset();
+	const resetBtn = document.querySelector('#reset');
+	resetBtn.addEventListener('click', handleReset, false);
+
+	const handleTurn = () => Game.turn();
+	let _btns = document.querySelectorAll('.grid-btn');
 	_btns.forEach((btn) => {
-		btn.addEventListener('click', handleClick, false);
+		btn.addEventListener('click', handleTurn, false);
 	})
 
 	const displayMainMsg = (message) => {_mainMsg.textContent = message;}
@@ -90,34 +94,39 @@ const Game = (() => {
 	let _whosTurn;
 	let _result, _winner;
 	const getWhosTurn = () => _whosTurn;
-	const switchTurn = () => {
+	const nextTurn = () => {
 		(_whosTurn === _p1) ? _whosTurn = _p2 : _whosTurn = _p1;
 	}
+	
+	const reset = () => {
+		DisplayController.displayInfoMsg('');
+		GameBoard.clearBoard();
+		DisplayController.renderBoard(GameBoard.getBoard());
+		gameInit();
+	} 
 
 	const endGame = () => {
-		console.log(_result);
 		if (_result === 'win') DisplayController.displayMainMsg(`${_winner} wins!`);
-		else displayMainMsg(`It's a tie nerds!`);
-		games.push({
-			result: _result,
-			winner: _winner
-		});
+		else DisplayController.displayMainMsg(`It's a tie nerds!`);
+		if (confirm('Would you like to play again?')){
+			reset();
+		}
 	}
 
 	const turn = () => {
-		let outcome = GameBoard.checkBoard();
-		_result = outcome.result;
-		_winner = outcome.winner;
-		let index = event.target.dataset.index;
-		let placed = GameBoard.placeToken(index, getWhosTurn().getToken());
+		let btnIndex = event.target.dataset.index;
+		let placed = GameBoard.placeToken(btnIndex, getWhosTurn().getToken());
 		if (placed) {
-			if (_result !== undefined) endGame();
+			nextTurn();
 			DisplayController.displayInfoMsg('');
-			switchTurn();
 			DisplayController.displayMainMsg(`${_whosTurn.getName()}'s turn.`);
 		} 		
 		else DisplayController.displayInfoMsg('Pick an empty space dork!');
 		DisplayController.renderBoard(GameBoard.getBoard());
+		let outcome = GameBoard.checkBoard();
+		_result = outcome.result;
+		_winner = outcome.winner;
+		if (_result !== undefined) endGame();
 	}
 
 	const playerInit = () => {
@@ -132,11 +141,10 @@ const Game = (() => {
 		DisplayController.displayMainMsg(`${_whosTurn.getName()} goes first!`)
 	}
 
-	return {gameInit, playerInit, getWhosTurn, switchTurn, turn} //test return
+	return {gameInit, playerInit, getWhosTurn, nextTurn, turn, reset} //test return
 	// return {gameInit} //real return
 })();
 
-const games = []; //gives info on games played so far
 
 Game.gameInit();
 

@@ -120,6 +120,7 @@ const Game = (() => {
 			nextTurn();
 			DisplayController.displayInfoMsg('');
 			DisplayController.displayMainMsg(`${_whosTurn.getName()}'s turn.`);
+			DisplayController.renderBoard(GameBoard.getBoard());
 		} 		
 		else DisplayController.displayInfoMsg('Pick an empty space dork!');
 		DisplayController.renderBoard(GameBoard.getBoard());
